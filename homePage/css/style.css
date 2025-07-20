@@ -3,7 +3,7 @@ body {
   font-family: "Helvetica Neue", Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-image: url(../photo/bei.jpg);
+  background-image: url(../../publicPhotos/background.jpg);
   background-repeat:no-repeat;
   background-size:cover;
   background-attachment:fixed;
@@ -19,39 +19,6 @@ body {
   align-items: center;
   font-family: "Arial", sans-serif;
   background-color: #f5f5f5;
-}
-/* 透明顶部导航栏 */
-#top-header {
-  position: fixed;
-  top: -60px; /* 初始隐藏 */
-  width: 100%;
-  background: rgba(0, 0, 0, 0.05); /* 悬停时显示轻微透明度 */
-  backdrop-filter: blur(5px); /* 毛玻璃效果 */
-  transition: top 0.3s ease;
-  z-index: 1000;
-}
-
-#top-header nav ul {
-  display: flex;
-  justify-content: center;
-  list-style: none;
-  margin: 0;
-  padding: 15px 0;
-}
-
-#top-header nav li {
-  margin: 0 20px;
-}
-
-#top-header nav a {
-  color: #333;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s;
-}
-
-#top-header nav a:hover {
-  color: #ff66b2;
 }
 
 /* 主要内容区 */
@@ -83,7 +50,7 @@ body {
 .bold-text {
   font-weight: bold;
   font-size: 2rem;
-  color: #333;
+  color: #fff;
   margin: 0;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   white-space: nowrap; /* 防止文字换行 */
@@ -104,7 +71,7 @@ body {
   white-space: nowrap;
   padding-left: 100%;
   animation: scroll 20s linear infinite;
-  color: #333;
+  color: #fff;
   font-size: 14px;
 }
 

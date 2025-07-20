@@ -1,0 +1,34 @@
+/* 透明顶部导航栏 */
+#top-header {
+  position: fixed;
+  top: -60px; /* 初始隐藏 */
+  width: 100%;
+  height: 60px;
+  background: rgba(0, 0, 0, 0.05); /* 悬停时显示轻微透明度 */
+  backdrop-filter: blur(5px); /* 毛玻璃效果 */
+  transition: top 0.3s ease;
+  z-index: 1000;
+}
+
+#top-header nav #top-header-ul {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  margin: 0;
+  padding: 15px 0;
+}
+
+#top-header nav li {
+  margin: 0 20px;
+}
+
+#top-header nav a {
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+#top-header nav a:hover {
+  color: #ff66b2;
+}

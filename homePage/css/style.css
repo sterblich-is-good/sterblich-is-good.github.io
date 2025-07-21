@@ -83,3 +83,32 @@ body {
     transform: translateX(-100%);
   }
 }
+
+/*专用于移动设备的样式修正 */
+@media (max-width: 1025px) {
+  /* 圆形头像缩小 */
+  .avatar-circle {
+    width: 80px;
+    height: 80px;
+  }
+
+  /* 大标题缩小字体 + 内边距 */
+  .bold-text {
+    font-size: 1.3rem;
+    padding: 0 1rem;
+    text-align: center;
+  }
+
+  /* 滚动字幕字体缩小 */
+  .scrolling-text {
+    font-size: 12px;
+  }
+
+  /* 主要容器改为垂直布局 + 居中对齐 */
+  .profile-container {
+    flex-direction: column;
+    padding: 60px 10px 0;
+    text-align: center;
+    gap: 16px;
+  }
+}

@@ -95,3 +95,41 @@ body {
   font-size: 16px;
   color: #007bff;
 }
+/*解决移动端适配问题*/
+@media (max-width: 1025px) {
+  /* 容器适配手机屏幕 */
+  .container {
+    margin: 80px 10px 20px;
+    padding: 20px 16px;
+    border-radius: 10px;
+  }
+
+  /* 头像缩小适配 */
+  .avatar {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 16px;
+  }
+
+  /* 标题字号优化 */
+  h1, h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  /* 正文字体更紧凑 */
+  p, ul, #container-ul li {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* 列表样式微调 */
+  #container-ul li {
+    padding-left: 24px;
+    margin-bottom: 10px;
+  }
+
+  #container-ul li::before {
+    font-size: 14px;
+  }
+}

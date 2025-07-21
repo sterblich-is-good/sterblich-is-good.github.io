@@ -1,0 +1,44 @@
+/*解决移动端导航栏问题*/
+@media (max-width: 1025px) {
+  /* 强制显示导航栏 */
+  #top-header.hidden {
+    display: block !important;
+  }
+
+  #top-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.05); /* 悬停时显示轻微透明度 */
+  backdrop-filter: blur(5px); /* 毛玻璃效果 */
+    z-index: 999;
+  }
+
+  #top-header-ul {
+    display: flex;
+    flex-wrap: nowrap;            /* 不换行 */
+    justify-content: space-around;/* 自动分配空间 */
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0.6rem 0.4rem;
+    overflow: hidden;
+  }
+
+  #top-header-ul li {
+    flex: 1 1 auto;               /* 每个项可以缩放 */
+    text-align: center;
+  }
+
+  #top-header-ul li a {
+    display: block;
+    color: #333;
+    font-size: 13px;              /* 字体缩小 */
+    text-decoration: none;
+    padding: 0.4rem 0.3rem;
+    white-space: nowrap;          /* 防止文字换行 */
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+}

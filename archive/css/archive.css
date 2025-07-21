@@ -1,0 +1,100 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-image: url(../../publicPhotos/background.jpg);
+  background-size: cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  color: #f0f0f0;
+  min-height: 100vh;
+}
+
+/* 主容器 */
+.archive-container {
+  max-width: 900px;
+  margin: 200px auto 60px;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* 标题样式 */
+.archive-container h1 {
+  font-size: 28px;
+  margin-bottom: 30px;
+  color: #00e5ff;
+  text-align: center;
+}
+
+.archive-year {
+  margin-bottom: 40px;
+}
+
+.archive-year h2 {
+  color: #00d9ff;
+  font-size: 22px;
+  border-left: 4px solid #00d9ff;
+  padding-left: 12px;
+  margin-bottom: 16px;
+}
+
+.archive-year ul {
+  list-style: none;
+  padding: 0;
+}
+
+.archive-year li {
+  margin-bottom: 14px;
+  padding-left: 20px;
+  position: relative;
+  font-size: 16px;
+  color: #ffffffcc;
+  transition: all 0.3s ease;
+}
+
+.archive-year li::before {
+  content: "🕒";
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.archive-year .date {
+  color: #00f7ff;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.archive-year li a {
+  color: #fff;
+  text-decoration: none;
+  border-bottom: 1px dashed #00f7ff66;
+}
+
+.archive-year li:hover a {
+  color: #00f7ff;
+  text-shadow: 0 0 5px #00f7ff99;
+}
+
+/* 📱 响应式 */
+@media (max-width: 600px) {
+  .archive-container {
+    margin: 100px 20px 40px;
+    padding: 20px;
+  }
+
+  .archive-container h1 {
+    font-size: 22px;
+  }
+
+  .archive-year h2 {
+    font-size: 18px;
+  }
+
+  .archive-year li {
+    font-size: 14px;
+  }
+}

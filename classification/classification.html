@@ -1,11 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>分类 | Sterblich的博客</title>
+  <link rel="stylesheet" href="./css/classification.css" />
+  <link rel="stylesheet" href="../publicCss/public.css">
+  <link rel="stylesheet" href="../publicCss/mobileTerminal.css">
+  
 </head>
 <body>
-    hello!
+
+  <!--透明顶部导航栏 -->
+  <header id="top-header">
+    <nav>
+      <ul id="top-header-ul">
+        <li><a href="../index.html">首页</a></li>
+        <li><a href="#">分类</a></li>
+        <li><a href="../archive/archive.html">归档</a></li>
+        <li><a href="../about/about.html">关于</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- 主体内容 -->
+  <div class="cool-container">
+    <aside class="cool-sidebar">
+      <h2>分类</h2>
+      <ul class="cool-category-list">
+        <li><a href="#">🌐 前端开发</a></li>
+        <li><a href="#">🧠 人工智能</a></li>
+        <li><a href="#">🛠 后端技术</a></li>
+        <li><a href="#">📝 学习笔记</a></li>
+        <li><a href="#">📷 生活记录</a></li>
+        <li><a href="#">📁 项目集锦</a></li>
+        <li><a href="#">📦 数据结构</a></li>
+      </ul>
+    </aside>
+
+    <main class="cool-main" id="article-area">
+      <h1>🎉 欢迎浏览分类！</h1>
+      <p>点击分类进入你感兴趣的内容板块。</p>
+      <div class="article-grid" id="article-grid"></div>
+    </main>
+  </div>
+  <script src="../publicJs/public.js"></script>
+  <script src="./js/classification.js"></script>
 </body>
 </html>

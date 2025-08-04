@@ -128,6 +128,17 @@
     .article-card.view-all:hover {
       background: linear-gradient(to right, #0095ff, #0058ff);
     }
+    /* 所有文章卡片链接去除下划线 */
+#article-grid a {
+  text-decoration: none;
+  color: inherit; /* 保持继承颜色 */
+}
+
+/* 可选：hover 时添加样式 */
+#article-grid a:hover {
+  text-decoration: none; /* 确保 hover 时也不加下划线 */
+}
+
 
     @media (max-width: 1025px) {
       .cool-container {

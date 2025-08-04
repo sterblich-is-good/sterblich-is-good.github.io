@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>iStoreOS+Tailscale实现外网设备访问局域网内设备</title>
+  <style>
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+
+    /* 左侧按钮区域 */
+    .left-buttons {
+      width: 70px;
+      background-color: #34495e;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 0;
+      box-sizing: border-box;
+      gap: 15px;
+      transition: width 0.3s ease, padding 0.3s ease;
+      overflow: hidden;
+    }
+
+    .left-buttons.hidden {
+      width: 0;
+      padding: 0;
+    }
+
+    .left-buttons button {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 6px;
+      background-color: #2980b9;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .left-buttons button:hover {
+      background-color: #1c5980;
+    }
+
+    /* 大纲部分 */
+    .sidebar {
+      width: 0;
+      overflow: hidden;
+      background-color: #ecf0f1;
+      border-right: 1px solid #bdc3c7;
+      padding: 0;
+      box-sizing: border-box;
+      transition: width 0.3s ease, padding 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar.expanded {
+      width: 250px;
+      padding: 20px;
+    }
+
+    .sidebar-header {
+      display: flex;
+      justify-content: flex-start;
+      margin-bottom: 15px;
+    }
+
+    .sidebar-header button {
+      border: none;
+      background-color: #e74c3c;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.2s ease;
+    }
+
+    .sidebar-header button:hover {
+      background-color: #c0392b;
+    }
+
+    .sidebar h3 {
+      margin: 0 0 15px 0;
+      font-weight: 600;
+      color: #34495e;
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 8px 5px;
+      text-decoration: none;
+      color: #34495e;
+      border-radius: 4px;
+      margin-bottom: 6px;
+    }
+
+    .sidebar a:hover {
+      background-color: #2980b9;
+      color: white;
+    }
+
+    /* 正文 */
+    .content {
+      flex: 1;
+      padding: 25px;
+      overflow-y: auto;
+      background-color: #fff;
+    }
+
+    .page-title {
+      margin-bottom: 25px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 10px;
+    }
+
+    .page-title h1 {
+      font-size: 28px;
+      margin: 0;
+      font-weight: 700;
+      color: #2c3e50;
+    }
+
+
+    /* 手机端适配 */
+    @media (max-width: 600px) {
+
+      /* 手机端只显示返回按钮，隐藏展开按钮和大纲 */
+      .left-buttons {
+        width: 70px;
+        padding: 10px 0;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .left-buttons button {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 15px;
+      }
+
+      #toggleSidebarBtn {
+        display: none !important;
+      }
+
+      .sidebar {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="left-buttons" id="leftButtons">
+      <a href="../../archive/archive.html" style="text-decoration: none;"><button id="backBtn" title="返回">←</button></a>
+      <button id="toggleSidebarBtn" title="展开大纲">☰</button>
+    </div>
+
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <button id="closeSidebarBtn" title="收起大纲">收起</button>
+      </div>
+      <h3>目录大纲</h3>
+      <a href="#sec1">前提</a>
+      <a href="#sec2">网络拓扑</a>
+      <a href="#sec3">1.在iStoreOS安装Tailscale</a>
+      <a href="#sec4">2.设置Tailscale</a>
+      <a href="#sec5">3.添加别的设备就可以互访了</a>
+    </nav>
+
+    <main class="content">
+      <div class="page-title">
+        <h1>iStoreOS+Tailscale实现外网设备访问局域网内设备</h1>
+      </div>
+      <section id="sec1">
+        <h2>前提</h2>
+        <p>1.iStoreOS 能正常联网</p>
+        <p>2.iStoreOS 使用的是路由模式（推荐），也可以桥接，但要特别注意防火墙</p>
+        <p>3.路由器（如果只有iStoreOS则不需要关注本条）建议设置为“AP模式”或关闭 DHCP，避免双 NAT</p>
+      </section>
+      <section id="sec2">
+        <h2>网络拓扑</h2>
+        <p>[光猫]</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;↓</p>
+        <p>[iStoreOS软路由]（已接入网络）</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;↓</p>
+        <p>[路由器]（可能是AP模式或普通路由）</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;↓</p>
+        <p>[家中设备]（PC、NAS、手机、摄像头等）</p>
+      </section>
+      <section id="sec3">
+        <h2>1.在iStoreOS安装Tailscale</h2>
+        <a href="./photo/image-20250730202656725.png"target="_blank"><img src="./photo/image-20250730202656725.png" alt="" height="300"
+            width="500"></a>
+
+      </section>
+      <section id="sec4">
+        <h2>2.设置Tailscale</h2>
+        <p>1.在左侧服务选项点击Tailscale</p>
+        <p>2.在全局设置里填写设备名称和公开网段(公开网段填写局域网ip网段，需根据实际局域网段填写，类似：192.168.0.0/24)</p>
+        <p>3.服务状态点击启用并点击保存并应用</p>
+        <a href="./photo/image-20250730203734806.png"target="_blank"><img src="./photo/image-20250730203734806.png" alt="" height="300"
+            width="500"></a>
+        <p>4.点击验证绑定的链接，选择一种方式登录</p>
+        <a href="./photo/image-20250730203946403.png"target="_blank"><img src="./photo/image-20250730203946403.png" alt="" height="300"
+            width="500"></a>
+        <p>5.进入tailscale管理后台</p>
+        <p>6.点击右侧...(后面操作如图所示)</p>
+        <a href="./photo/image-20250730204312641.png"target="_blank"><img src="./photo/image-20250730204312641.png" alt="" height="300"
+            width="500"></a>
+        <p></p>
+        <a href="./photo/image-20250730204433547.png"target="_blank"><img src="./photo/image-20250730204433547.png" alt="" height="300"
+            width="500"></a>
+        <p></p>
+        <a href="./photo/image-20250730204456395.png"target="_blank"><img src="./photo/image-20250730204456395.png" alt="" height="300"
+            width="500"></a>
+        <p></p>
+        <a href="./photo/image-20250730204602866.png"target="_blank"><img src="./photo/image-20250730204602866.png" alt="" height="300"
+            width="500"></a>
+        <p>7.打开iStoreOS终端(输入用户名和密码)</p>
+        <a href="./photo/image-20250730204753344.png"target="_blank"><img src="./photo/image-20250730204753344.png" alt="" height="300"
+            width="500"></a>
+        <p>8.输入：tailscale up --accept-routes --advertise-routes=192.168.0.0/24 --hostname=istoreos并回车</p>
+        <a href="./photo/image-20250730205024180.png"target="_blank"><img src="./photo/image-20250730205024180.png" alt="" height="300"
+            width="500"></a>
+        <p>9.回到iStoreOS管理界面点击网络->接口->新添加接口</p>
+        <a href="./photo/image-20250730205221143.png"target="_blank"><img src="./photo/image-20250730205221143.png" alt="" height="300"
+            width="500"></a>
+        <p>10.名称tailscale，协议不配置协议，设备tailscale0->创建接口</p>
+        <a href="./photo/image-20250730205338112.png"target="_blank"><img src="./photo/image-20250730205338112.png" alt="" height="300"
+            width="500"></a>
+        <p>11.防火墙设置自定义防火墙tailscale->保存</p>
+        <a href="./photo/image-20250730205540266.png"target="_blank"><img src="./photo/image-20250730205540266.png" alt="" height="300"
+            width="500"></a>
+        <p>12.点击保存并应用</p>
+        <p>13.点击左侧选项卡防火墙</p>
+        <p>14.区域里选择tailscale编辑</p>
+        <a href="./photo/image-20250730205735232.png"target="_blank"><img src="./photo/image-20250730205735232.png" alt="" height="300"
+            width="500"></a>
+        <p>15.如图配置并点击保存</p>
+        <a href="./photo/image-20250730205810594.png"target="_blank"><img src="./photo/image-20250730205810594.png" alt="" height="300"
+            width="500"></a>
+        <p>16.点击保存并应用</p>
+        <p>17.进入终端登录账号密码，输入reboot，等待重启结束</p>
+      </section>
+      <section id="sec5">
+        <h2>3.添加别的设备就可以互访了</h2>
+        <p>直接用局域网ip即可</p>
+      </section>
+    </main>
+  </div>
+  
+  <script>
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('toggleSidebarBtn');
+    const backBtn = document.getElementById('backBtn');
+    const leftButtons = document.getElementById('leftButtons');
+    const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+
+    toggleBtn.addEventListener('click', () => {
+      sidebar.classList.add('expanded');
+      leftButtons.classList.add('hidden');
+    });
+
+    backBtn.addEventListener('click', () => {
+      if (sidebar.classList.contains('expanded')) {
+        sidebar.classList.remove('expanded');
+        leftButtons.classList.remove('hidden');
+      } else {
+        history.back();
+      }
+    });
+
+    closeSidebarBtn.addEventListener('click', () => {
+      sidebar.classList.remove('expanded');
+      leftButtons.classList.remove('hidden');
+    });
+  </script>
+
+</body>
+
+</html>

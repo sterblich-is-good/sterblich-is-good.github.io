@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>iStoreOS+Tailscale实现外网设备访问局域网内设备</title>
+  <title>在本地连接github仓库的方法</title>
   <style>
     body,
     html {
@@ -136,6 +136,16 @@
       color: #2c3e50;
     }
 
+    /*代码模块*/
+    pre {
+      background-color: #f4f4f4;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    code {
+      font-family: Consolas, monospace;
+    }
 
     /* 手机端适配 */
     @media (max-width: 600px) {
@@ -178,95 +188,97 @@
         <button id="closeSidebarBtn" title="收起大纲">收起</button>
       </div>
       <h3>目录大纲</h3>
-      <a href="#sec1">前提</a>
-      <a href="#sec2">网络拓扑</a>
-      <a href="#sec3">1.在iStoreOS安装Tailscale</a>
-      <a href="#sec4">2.设置Tailscale</a>
-      <a href="#sec5">3.添加别的设备就可以互访了</a>
+      <a href="#sec1">安装Git</a>
+      <a href="#sec2">配置 Git 用户信息</a>
+      <a href="#sec3">生成 SSH Key（推荐）</a>
+      <a href="#sec4">克隆仓库到本地</a>
+      <a href="#sec5">本地修改并推送到 GitHub</a>
+      <a href="#sec6">常用命令总结</a>
+
     </nav>
 
     <main class="content">
       <div class="page-title">
-        <h1>iStoreOS+Tailscale实现外网设备访问局域网内设备</h1>
+        <h1>这是页面主标题</h1>
       </div>
       <section id="sec1">
-        <h2>前提</h2>
-        <p>1.iStoreOS 能正常联网</p>
-        <p>2.iStoreOS 使用的是路由模式（推荐），也可以桥接，但要特别注意防火墙</p>
-        <p>3.路由器（如果只有iStoreOS则不需要关注本条）建议设置为“AP模式”或关闭 DHCP，避免双 NAT</p>
+        <h2>安装Git</h2>
+        <p>Windows：<a href="https://git-scm.com/downloads/win">Git for Windows</a></p>
+        <p>Mac: </p>
+        <pre><code>brew install git</code></pre>
+        <p>Linux: </p>
+        <pre><code>sudo apt-get install git</code></pre>
       </section>
       <section id="sec2">
-        <h2>网络拓扑</h2>
-        <p>[光猫]</p>
-        <p>&nbsp;&nbsp;&nbsp;&nbsp;↓</p>
-        <p>[iStoreOS软路由]（已接入网络）</p>
-        <p>&nbsp;&nbsp;&nbsp;&nbsp;↓</p>
-        <p>[路由器]（可能是AP模式或普通路由）</p>
-        <p>&nbsp;&nbsp;&nbsp;&nbsp;↓</p>
-        <p>[家中设备]（PC、NAS、手机、摄像头等）</p>
+        <h2>配置 Git 用户信息</h2>
+        <p>输入：</p>
+        <pre><code>
+          git config --global user.name "你的GitHub用户名"
+          git config --global user.email "你的GitHub邮箱"
+        </code></pre>
       </section>
       <section id="sec3">
-        <h2>1.在iStoreOS安装Tailscale</h2>
-        <a href="./photo/image-20250730202656725.png"target="_blank"><img src="./photo/image-20250730202656725.png" alt="" height="300"
-            width="500"></a>
-
+        <h2>生成 SSH Key（推荐）</h2>
+        <p>这样以后每次推送不用输入账号密码。</p>
+        <p>1. 生成 SSH key：</p>
+        <pre><code>
+          ssh-keygen -t rsa -b 4096 -C "你的GitHub邮箱"
+        </code></pre>
+        <p>2. 查看公钥：</p>
+        <pre><code>
+          cat ~/.ssh/id_rsa.pub
+        </code></pre>
+        <p>复制输出内容</p>
+        <p>3. 打开 <a href="https://github.com/settings/keys">GitHub SSH keys</a> 设置
+          ，点击 New SSH key，把复制的公钥粘贴进去并保存。</p>
+        <p>测试连接：</p>
+        <pre><code>
+          ssh -T git@github.com
+        </code></pre>
+        <p>如果提示 Hi 用户名! You've successfully authenticated 就成功了。</p>
       </section>
       <section id="sec4">
-        <h2>2.设置Tailscale</h2>
-        <p>1.在左侧服务选项点击Tailscale</p>
-        <p>2.在全局设置里填写设备名称和公开网段(公开网段填写局域网ip网段，需根据实际局域网段填写，类似：192.168.0.0/24)</p>
-        <p>3.服务状态点击启用并点击保存并应用</p>
-        <a href="./photo/image-20250730203734806.png"target="_blank"><img src="./photo/image-20250730203734806.png" alt="" height="300"
-            width="500"></a>
-        <p>4.点击验证绑定的链接，选择一种方式登录</p>
-        <a href="./photo/image-20250730203946403.png"target="_blank"><img src="./photo/image-20250730203946403.png" alt="" height="300"
-            width="500"></a>
-        <p>5.进入tailscale管理后台</p>
-        <p>6.点击右侧...(后面操作如图所示)</p>
-        <a href="./photo/image-20250730204312641.png"target="_blank"><img src="./photo/image-20250730204312641.png" alt="" height="300"
-            width="500"></a>
-        <p></p>
-        <a href="./photo/image-20250730204433547.png"target="_blank"><img src="./photo/image-20250730204433547.png" alt="" height="300"
-            width="500"></a>
-        <p></p>
-        <a href="./photo/image-20250730204456395.png"target="_blank"><img src="./photo/image-20250730204456395.png" alt="" height="300"
-            width="500"></a>
-        <p></p>
-        <a href="./photo/image-20250730204602866.png"target="_blank"><img src="./photo/image-20250730204602866.png" alt="" height="300"
-            width="500"></a>
-        <p>7.打开iStoreOS终端(输入用户名和密码)</p>
-        <a href="./photo/image-20250730204753344.png"target="_blank"><img src="./photo/image-20250730204753344.png" alt="" height="300"
-            width="500"></a>
-        <p>8.输入：tailscale up --accept-routes --advertise-routes=192.168.0.0/24 --hostname=istoreos并回车</p>
-        <a href="./photo/image-20250730205024180.png"target="_blank"><img src="./photo/image-20250730205024180.png" alt="" height="300"
-            width="500"></a>
-        <p>9.回到iStoreOS管理界面点击网络->接口->新添加接口</p>
-        <a href="./photo/image-20250730205221143.png"target="_blank"><img src="./photo/image-20250730205221143.png" alt="" height="300"
-            width="500"></a>
-        <p>10.名称tailscale，协议不配置协议，设备tailscale0->创建接口</p>
-        <a href="./photo/image-20250730205338112.png"target="_blank"><img src="./photo/image-20250730205338112.png" alt="" height="300"
-            width="500"></a>
-        <p>11.防火墙设置自定义防火墙tailscale->保存</p>
-        <a href="./photo/image-20250730205540266.png"target="_blank"><img src="./photo/image-20250730205540266.png" alt="" height="300"
-            width="500"></a>
-        <p>12.点击保存并应用</p>
-        <p>13.点击左侧选项卡防火墙</p>
-        <p>14.区域里选择tailscale编辑</p>
-        <a href="./photo/image-20250730205735232.png"target="_blank"><img src="./photo/image-20250730205735232.png" alt="" height="300"
-            width="500"></a>
-        <p>15.如图配置并点击保存</p>
-        <a href="./photo/image-20250730205810594.png"target="_blank"><img src="./photo/image-20250730205810594.png" alt="" height="300"
-            width="500"></a>
-        <p>16.点击保存并应用</p>
-        <p>17.进入终端登录账号密码，输入reboot，等待重启结束</p>
+        <h2>克隆仓库到本地</h2>
+        <p>在你想放项目的文件夹运行（如果是windows的话在文件夹下可以右击选择Open Git Bash here）：</p>
+        <pre><code>
+          git clone git@github.com:用户名/仓库名.git
+        </code></pre>
       </section>
       <section id="sec5">
-        <h2>3.添加别的设备就可以互访了</h2>
-        <p>直接用局域网ip即可</p>
+        <h2>本地修改并推送到 GitHub</h2>
+        <p>1. 进入项目目录：</p>
+        <pre><code>
+          cd 仓库名
+        </code></pre>
+        <p>2. 新建或修改文件。</p>
+        <p>3. 添加到暂存区：</p>
+        <pre><code>
+          git add .
+        </code></pre>
+        <p>4. 提交：</p>
+        <pre><code>
+          git commit -m "你的提交说明"
+        </code></pre>
+        <p>5. 推送到Github：</p>
+        <pre><code>
+          git push origin main
+        </code></pre>
+        <mark>注意：有些仓库主分支叫 master，那就改成 git push origin master。</mark>
+      </section>
+      <section id="sec6">
+        <h2>常用命令总结</h2>
+        <pre><code>
+          git pull origin main      # 拉取最新代码
+          git status                # 查看文件状态
+          git branch -a             # 查看所有分支
+          git checkout 分支名        # 切换分支
+          git push origin 分支名     # 推送到指定分支
+        </code></pre>
       </section>
     </main>
   </div>
-  
+
+
   <script>
     const sidebar = document.getElementById('sidebar');
     const toggleBtn = document.getElementById('toggleSidebarBtn');

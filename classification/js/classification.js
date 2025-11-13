@@ -1,40 +1,72 @@
-const categoryData = {
-    "网络相关": [
-      { title: "异地组网", desc: "iStoreOS+Tailscale实现外网设备访问局域网内设备",src:"../content/0804/con01.html" }
-    ],
-    "其他分类": [
-      { title: "在本地连接github仓库的方法", desc: "用Git连接远程仓库方便管理",src:"../content/1010/con02.html" }
-    ],
-  };
+import { createApp, ref } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
 
-  const links = document.querySelectorAll('.cool-category-list a');
-  const grid = document.getElementById('article-grid');
+    const App = {
+      setup() {
+        const liList = ref([
+            {id:1,title:"🧠 人工智能"},
+            {id:2,title:"🛠 后端技术"},
+            {id:3,title:"📝 学习笔记"},
+            {id:4,title:"📷 生活记录"},
+            {id:5,title:"🌐 网络相关"},
+            {id:6,title:"📦 其他分类"},
+        ])
 
-  links.forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const name = link.textContent.trim().replace(/^🧠|🌐|🛠|📝|📷|📦/g, '').trim();
-      const items = categoryData[name];
-      if (!items) {
-        grid.innerHTML = `<p style="color: #fff;">该分类暂无内容。</p>`;
-        return;
-      }
+        const activeCategory = ref(1)
 
-      grid.innerHTML = items.map(item => `
-        <a href="${item.src}">
-        <div class="article-card">
-          <h3>${item.title}</h3>
-          <p>${item.desc}</p>
+        const allArticles = {
+          5: [
+            { id: 501, title: "异地组网", desc: "iStoreOS+Tailscale实现外网设备访问局域网内设备",link:"../content/0804/con01.html" },
+          ],
+          6: [
+            { id: 601, title: "在本地连接github仓库的方法", desc: "用Git连接远程仓库方便管理",link:"../content/1010/con02.html" },
+          ],
+        }
+
+        const articles = ref(allArticles[activeCategory.value])
+
+        function selectCategory(id) {
+          activeCategory.value = id
+          articles.value = allArticles[id]
+        }
+
+        return { liList, activeCategory, articles, selectCategory }
+      },
+      template: `
+        <div class="cool-container">
+          <aside class="cool-sidebar">
+            <h2>分类</h2>
+            <ul class="cool-category-list">
+              <li 
+                v-for="li in liList" 
+                :key="li.id"
+                @click="selectCategory(li.id)"
+                :class="{ active: activeCategory === li.id }"
+              >
+                <a href="#">{{ li.title }}</a>
+              </li>
+            </ul>
+          </aside>
+
+          <main class="cool-main" id="article-area">
+            <h1>🎉 欢迎浏览分类！</h1>
+            <p>点击分类进入你感兴趣的内容板块。</p>
+
+            <div class="article-grid" id="article-grid">
+              <a 
+                v-for="item in articles"
+                :key="item.id"
+                class="article-card"
+                :href="item.link"
+              >
+                <h3>{{ item.title }}</h3>
+                <p>{{ item.desc }}</p>
+              </a>
+            </div>
+          </main>
         </div>
-        </a>
-      `).join('') + `
-      <a href="" >
-        <div class="article-card view-all">
-          <h3>📖 浏览全部</h3>
-          <p>点击查看更多 "${name}" 相关内容。</p>
-        </div>
-      </a>
-      `;
-    });
-  });
+      `
+    }
+
+    // ✅ 关键：创建 Vue 应用并挂载到 #app
+    createApp(App).mount('#app')
 

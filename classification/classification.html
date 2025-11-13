@@ -23,27 +23,11 @@
     </nav>
   </header>
 
-  <!-- 主体内容 -->
-  <div class="cool-container">
-    <aside class="cool-sidebar">
-      <h2>分类</h2>
-      <ul class="cool-category-list">
-        <li><a href="#">🧠 人工智能</a></li>
-        <li><a href="#">🛠 后端技术</a></li>
-        <li><a href="#">📝 学习笔记</a></li>
-        <li><a href="#">📷 生活记录</a></li>
-        <li><a href="#">🌐 网络相关</a></li>
-        <li><a href="#">📦 其他分类</a></li>
-      </ul>
-    </aside>
+  <!-- vue渲染数据到这 -->
+<div id="app"></div>
 
-    <main class="cool-main" id="article-area">
-      <h1>🎉 欢迎浏览分类！</h1>
-      <p>点击分类进入你感兴趣的内容板块。</p>
-      <div class="article-grid" id="article-grid"></div>
-    </main>
-  </div>
   <script src="../publicJs/public.js"></script>
-  <script src="./js/classification.js"></script>
+  <script src="./js/classification.js" type="module"></script>
+  
 </body>
 </html>
